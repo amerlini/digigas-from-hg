@@ -59,7 +59,7 @@
 			</td>
 			<td class="actions">
 					<?php echo $this->Html->image('oxygen/16x16/mimetypes/pdf.png', array('url' => array('controller' => 'ordered_products', 'action' => 'print_pdf_hamper', $hamper['Hamper']['id']), 'title' => __('PDF', true))); ?>
-                    <?php echo $this->Html->image('oxygen/16x16/mimetypes/application_vnd.ms_excel.png', array('url' => array('controller' => 'ordered_products', 'action' => 'export_excel_hamper', $hamper['Hamper']['id']), 'title' => __('esporta excel', true))); ?>
+                    <?php echo $this->Html->image('oxygen/16x16/mimetypes/application_vnd.ms_excel.png', array('url' => array('controller' => 'ordered_products', 'action' => 'print_excel_hamper', $hamper['Hamper']['id']), 'title' => __('esporta excel', true))); ?>
             </td>
         </tr>
         <?php endforeach; ?>
