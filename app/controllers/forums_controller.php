@@ -57,7 +57,24 @@ class ForumsController extends AppController {
 			'contain' => array('User.fullname')
 		));
 
-		$this->set(compact('forums', 'conversationCount', 'messagesCount', 'lastUpdates', 'lastMessages'));
+                # Altri Commentables
+
+                $commentables = array('Hamper', 'Product', 'News');
+
+                $commentableStats = $this->Comment->find('all', array(
+                        'conditions' => array('Comment.model' => $commentables, 'Comment.active' => 1),
+                        'fields' => array('Comment.model', 'count(DISTINCT item_id) as conversations', 'count(id) as messages', 'MAX(created) as created'),
+                        'group' => 'Comment.model',
+                        'recursive' => -1
+                    ));
+                
+                $commentableStats = Set::combine($commentableStats, '{n}.Comment.model', '{n}.0');
+                foreach($commentables as $commentable) {
+                    $this->loadModel($commentable);
+                    $commentableStats[$commentable]['forumName'] = $this->{$commentable}->getForumName();
+                }
+                
+                $this->set(compact('forums', 'conversationCount', 'messagesCount', 'lastUpdates', 'lastMessages','commentables', 'commentableStats'));
 	}
 
 	function view($id = null) {
@@ -67,7 +84,7 @@ class ForumsController extends AppController {
 		}
 		$forum = $this->Forum->find('first', array(
 				'conditions' => array('Forum.id' => $id, 'Forum.active' => 1, 'Forum.access_level >= ' => $this->Auth->user('role')),
-				'contain' => array('User.fullname')
+				'contain' => array('User.fullname', 'User.id')
 			));
 
 		if (empty($forum)) {
@@ -81,12 +98,16 @@ class ForumsController extends AppController {
 					'Comment.item_id' => $id,
 					'Comment.active' => 1,
 					'Comment.parent_id' => 0),
+                                'fields' => array('Comment.*', "CONCAT(LastUser.first_name, ' ', LastUser.last_name) AS LastUser__fullname", "CONCAT(User.first_name, ' ', User.last_name) AS User__fullname"),
 				'order' => array('Comment.created DESC'),
-				'contain' => array('User.id', 'User.fullname'),
+				'contain' => array('Comment', 'User',  'LastUser', 'LastComment.created'),
 				'limit' => 25
 			));
 		$comments = $this->paginate($this->Forum->Comment);
-
+                foreach($comments as $key => $comment )
+                {
+                    $comments[$key]['Comment']['status'] = $this->Forum->getThreadStatus($comment['Comment']['id']);
+                }
 		$commentIds = Set::extract('/Comment/id', $comments);
 		$commentsChildren = $this->Comment->find('all', array(
 			'conditions' => array('Comment.model' => 'Forum', 'Comment.parent_id' => $commentIds, 'Comment.active' => 1),
@@ -115,37 +136,94 @@ class ForumsController extends AppController {
 		$this->set('title_for_layout', 'Forum - ' . $forum['Forum']['name']);
 	}
 
-	function view_topic($id) {
-		$topic = $this->Comment->find('first', array(
-				'conditions' => array('Comment.id' => $id, 'Comment.active' => 1),
-				'contain' => array('User')
-			));
-		if (!empty($topic)) {
-			$forum = $this->Forum->find('first', array(
-					'conditions' => array('Forum.id' => $topic['Comment']['item_id'], 'Forum.active' => 1, 'Forum.access_level >= ' => $this->Auth->user('role')),
-					'fields' => array('Forum.id', 'Forum.name'),
-					'contain' => array()
-				));
-
-			//forum non attivo o utente non autenticato
-			if (empty($forum)) {
-				$this->Session->setFlash(__('Non puoi accedere a questa discussione', true));
-				$this->redirect(array('action' => 'index'));
-			}
-
-			$this->paginate = array('Comment' => array(
-					'conditions' => array('Comment.parent_id' => $id, 'Comment.active' => 1),
-					'order' => array('Comment.created ASC'),
-					'limit' => 25
-				));
-			$comments = $this->paginate($this->Comment);
-
-			$this->set(compact('forum', 'topic', 'comments'));
-		} else {
-			//topic non attivo
-			$this->Session->setFlash(__('Non puoi accedere a questa discussione', true));
-			$this->redirect(array('action' => 'index'));
+        function threadIndex($model = null, $item_id = null) {
+		if (!$model) {
+                    $this->Session->setFlash(sprintf(__('%s non valido', true), 'Forum'));
+                    $this->redirect(array('action' => 'index'));
 		}
+
+                if($model != 'Forum')
+                {
+                    $this->loadModel($model);
+                    $displayField= $this->{$model}->getDisplayField();
+                    $this->paginate = array($model => array(
+                            'fields' => array($model.'.*',$model.'.'.$displayField.' AS displayField', "CONCAT(LastUser.first_name, ' ', LastUser.last_name) AS LastUser__fullname", "CONCAT(User.first_name, ' ', User.last_name) AS User__fullname"),
+                            'contain' => array('LastUser', 'LastComment.created', 'User' ),
+                            'order' => 'LastComment.created DESC',
+                            'recursive' => 1
+                        )
+                    );
+                    $threads = $this->paginate($model);
+                    
+                }
+                else{
+                    $displayField= 'title';
+                    $model = 'Comment';
+                    $this->paginate = array($model => array(
+                            'fields' => array($model.'.*',$model.'.'.$displayField.' AS displayField', "CONCAT(LastUser.first_name, ' ', LastUser.last_name) AS LastUser__fullname", "CONCAT(User.first_name, ' ', User.last_name) AS User__fullname"),
+                            'contain' => array('LastUser', 'LastComment.created', 'User' ),
+                            'order' => 'LastComment.created DESC',
+                            'conditions' => array('Comment.item_id' => $item_id, 'Comment.model' => 'Forum', 'Comment.parent_id' => 0),
+                            'recursive' => 1
+                        )
+                    );
+                    $threads = $this->paginate('Comment');
+//                    debug($threads); die();
+                }
+                    
+
+                foreach($threads as $key => $thread )
+                {
+                    $threads[$key][$model]['status'] = $this->{$model}->getThreadStatus($thread[$model]['id']);
+                }
+                
+		$commentIds = Set::extract("/$model/id", $threads);
+                
+                
+		$lastMessages = $this->Comment->find('all', array(
+			'conditions' => array('Comment.model' => $model, 'Comment.active' => 1),
+                        'order' => array('Comment.created DESC'),
+			'limit' => 10,
+			'contain' => array('User.fullname')
+		));
+                $forumName = $this->{$model}->getForumName();
+		$this->set(compact('threads', 'lastMessages',  'model', 'forumName'));
+		$this->set('title_for_layout',  $this->{$model}->getForumName());
+	}
+
+	function view_topic($id) {
+
+            $topic = $this->Comment->find('first', array(
+                            'conditions' => array('Comment.id' => $id, 'Comment.active' => 1),
+                            'contain' => array('User')
+                    ));
+            
+            if (!empty($topic)) {
+                $forum = $this->Forum->find('first', array(
+                        'conditions' => array('Forum.id' => $topic['Comment']['item_id'], 'Forum.active' => 1, 'Forum.access_level >= ' => $this->Auth->user('role')),
+                        'fields' => array('Forum.id', 'Forum.name'),
+                        'contain' => array()
+                ));
+
+                //forum non attivo o utente non autenticato
+                if (empty($forum)) {
+                        $this->Session->setFlash(__('Non puoi accedere a questa discussione', true));
+                        $this->redirect(array('action' => 'index'));
+                }
+
+                $this->paginate = array('Comment' => array(
+                                'conditions' => array('Comment.parent_id' => $id, 'Comment.active' => 1),
+                                'order' => array('Comment.created ASC'),
+                                'limit' => 25
+                        ));
+                $comments = $this->paginate($this->Comment);
+
+                $this->set(compact('forum', 'topic', 'comments'));
+            } else {
+                //topic non attivo
+                $this->Session->setFlash(__('Non puoi accedere a questa discussione', true));
+                $this->redirect(array('action' => 'index'));
+            }
 	}
 
 	function admin_index() {
