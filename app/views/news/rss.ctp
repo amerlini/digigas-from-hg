@@ -1,13 +1,15 @@
 <?php
-
+header('Content-type: application/xml');
 $this->set('documentData', array(
 	'xmlns:dc' => 'http://purl.org/dc/elements/1.1/'));
 
+
 $this->set('channelData', array(
 	'title' => Configure::read('GAS.name'),
-	'link' => $this->Html->url('/', true),
+	'link' => $this->Html->url('/', true),	
 	'description' => Configure::read('GAS.name') . ' news',
-	'language' => 'it-IT'));
+	'language' => 'it-IT')
+	);
 
 
 foreach ($news as $post) {
