@@ -28,7 +28,7 @@
                 color:#333;
 				font-family: Arial, sans-serif;
 				font-size: 12px;">
-			<div class="header" style="background:#7CAF00; color:#fff; padding:10px 20px; font-size:20px; text-align:left;">
+			<div class="header" style="background:<?php echo Configure::read('colors.body_background'); ?>; color:#fff; padding:10px 20px; font-size:20px; text-align:left;">
 				<?php
 				echo Configure::read('GAS.name');
 				?>
@@ -36,7 +36,7 @@
 			<div class="content" style="padding:20px;">
 				<?php echo $content_for_layout; ?>
 			</div>
-			<div class="footer" style="background:#7CAF00; color:#fff; padding:10px 20px; font-size:10px; text-align:right;">
+			<div class="footer" style="background:<?php echo Configure::read('colors.body_background'); ?>; color:#fff; padding:10px 20px; font-size:10px; text-align:right;">
 				Email inviata tramite <?php echo $this->Html->link('digigas3', 'http://' . $_SERVER['HTTP_HOST']); ?>
 			</div>
 		</div>

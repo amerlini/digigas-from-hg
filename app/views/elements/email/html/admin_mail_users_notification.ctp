@@ -1,4 +1,4 @@
-<div class="date" style="background:#7CAF00;
+<div class="date" style="background:<?php echo Configure::read('colors.body_background'); ?>;
                 color:#fff;
                 padding:5px 8px;
                 width:auto;
@@ -11,7 +11,7 @@
     <?php echo __('Benvenuto in', true).' '.Configure::read('GAS.name'); ?>
 </h1>
 <p>
-Sei stato iscritto al gas <?php echo Configure::read('GAS.name'); ?>, per attivare il tuo account
+Sei stato iscritto al <?php echo Configure::read('GAS.name'); ?>, per attivare il tuo account
 clicca sul link sottostante e imposta la tua password.<br/>
 
 <strong>

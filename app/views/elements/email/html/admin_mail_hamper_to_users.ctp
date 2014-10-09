@@ -1,4 +1,4 @@
-<div class="date" style="background:#7CAF00;
+<div class="date" style="background:<?php echo Configure::read('colors.body_background'); ?>;
                 color:#fff;
                 padding:5px 8px;
                 width:auto;
