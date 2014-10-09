@@ -54,6 +54,17 @@ class PagesController extends AppController {
         ));
         $this->set(compact('lastNews'));
 
+		//pubblico i panieri  in homeapage
+        $this->Hamper = ClassRegistry::init('Hamper');
+                
+        //recupero le consegne di questa settimana: da oggi fino a domenica esclusa
+        $nextDeliveries = $this->Hamper->find('all', array(
+            'conditions' => $this->Hamper->getNextDeliveriesConditions(),         
+            'order' => array('Hamper.delivery_date_on'),
+            //'limit' => 10
+        ));
+        $this->set(compact('nextDeliveries'));
+		
 		//pubblico gli rss dei siti collegati
 		$this->RssSource = ClassRegistry::init('RssSource');
 		$connectedRss = $this->RssSource->getConnectedRss();

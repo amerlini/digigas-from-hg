@@ -83,6 +83,16 @@ class Hamper extends AppModel {
         return $data;
     }
 
+	// ritorna le date da oggi al prossimo giorno di consegna escluso, defa
+	function getNextDeliveriesConditions($nextWeekStartingDay = "next Sunday") {
+		// da oggi incluso alla prossima domenica esclusa
+		$startDate=date ('Y-m-d');
+		//$endDate=date('Y-m-d', strtotime("next Sunday"));
+        $endDate=date('Y-m-d', strtotime($nextWeekStartingDay));
+		$conditions = array('Hamper.delivery_date_on >=' => $startDate, 'Hamper.delivery_date_on <' => $endDate);
+        return $conditions;
+    }
+	
     function getActiveConditions() {
         $now = date('Y:m:d H:i');
         $conditions = array(

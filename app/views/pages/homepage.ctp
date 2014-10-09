@@ -32,6 +32,7 @@ $layout->blockEnd()
             <?php endforeach; ?>
         </div>
 
+	
 		<?php
 		echo $this->element('rss', array('data' => $connectedRss));
 		?>
@@ -40,5 +41,7 @@ $layout->blockEnd()
 </div>
 
 <div class="actions">
+	<?php echo $this->element('hampers/next_deliveries'); ?>
+	<br/><br/>
 	<?php echo $this->element('forum/last_messages'); ?>
 </div>
