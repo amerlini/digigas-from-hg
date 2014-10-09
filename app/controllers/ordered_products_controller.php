@@ -74,7 +74,7 @@ class OrderedProductsController extends AppController {
     function send_me_orders_email() {
         $user = $this->Auth->user();
         if($this->_mail_orders_to_user($user['User']['id'], $user['User']['email'])) {
-            $this->Session->setFlash(__('Ti è statainviata una email con il riepilogo dei tuoi ordini', true));
+            $this->Session->setFlash(__('Ti è stata inviata una email con il riepilogo dei tuoi ordini', true));
         } else {
             $this->Session->setFlash(__('Si è verificato un errore, riprova o contatta l\'amministratore', true));
         }
@@ -574,7 +574,7 @@ class OrderedProductsController extends AppController {
                 $this->data['OrderedProduct']['value'] = $orderedProduct['Product']['value'] * $this->data['OrderedProduct']['quantity'];
             if ($this->OrderedProduct->save($this->data)) {
 
-                $this->Session->setFlash(sprintf(__('Il %s è stata salvato', true), 'Il prodotto ordinato'));
+                $this->Session->setFlash(sprintf(__('Il %s è stata salvato', true), 'prodotto ordinato'));
                 if(isset($this->data['Referer'])) {
 					$this->redirect($this->data['Referer']);
 				} else {
