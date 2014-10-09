@@ -124,7 +124,7 @@ class ProductsController extends AppController {
                         $this->Product->ProductCategory->save(array('id' => null, 'name' => $product['ProductCategory']['name']));
                         $product['Product']['product_category_id'] = $this->Product->ProductCategory->id;
                     }
-                    $this->Product->save($product['Product']);
+                    //$this->Product->save($product['Product']);
                 }
                 if($this->Product->save($product['Product']))
                     $imported++;
@@ -149,7 +149,7 @@ class ProductsController extends AppController {
                 $seller = $this->Product->Seller->find('first', array('conditions'=> array('id' => $this->data['Product']['seller_id']), 'recursive' => -1));
 
                 $products = array();
-                while($objPHPExcel->getActiveSheet()->getCell("A$counter")->getValue() && $counter < 100)
+                while($objPHPExcel->getActiveSheet()->getCell("A$counter")->getValue() && $counter < 300)
                 {
                     $product_category = $this->Product->ProductCategory->find('first', array('conditions'=> array('name' => $objPHPExcel->getActiveSheet()->getCell("C$counter")->getValue()), 'recursive' => -1));
                     $product_category_id = "";
