@@ -453,6 +453,7 @@ class OrderedProductsController extends AppController {
         //dati dell'ordine
         $orderedProducts = $this->OrderedProduct->find('all', array(
             'conditions' => array('OrderedProduct.user_id' => $user_id, 'or' => array('paid' => 0, 'retired' => 0)),
+            'order' => 'Hamper.delivery_date_on',
             'contain' => array(
                 'User' => array('fields' => array('id', 'fullname')),
                 'Seller' => array('fields' => array('id', 'name')),

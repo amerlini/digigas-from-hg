@@ -34,6 +34,11 @@
 			echo "<br/>";
 			echo '('. $order['OrderedProduct']['note'] .')';
 		}
+		if ($order['Hamper']['delivery_date_on'])
+		{
+			echo "<br/>";
+			echo 'Consegna: '. date('D d/m',strtotime($order['Hamper']['delivery_date_on']));
+		}
 		?>
         </div>
         <div class="value">

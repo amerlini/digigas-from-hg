@@ -130,6 +130,7 @@ class OrderedProduct extends AppModel {
     function getUserOrder($user) {
         $userOrder = $this->find('all', array(
             'conditions' => array('retired' => '0', 'OrderedProduct.user_id' => $user['User']['id']),
+            'order' => 'Hamper.delivery_date_on',
             'contain' => array(
                 'Product',
                 'Seller'=> array('fields' => array('name')),
