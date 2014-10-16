@@ -19,13 +19,12 @@ class HampersController extends AppController {
     }
 
     function index() {
-        //dayana 12/06/2012 se mi viene passato il produttore, apro direttamente la pagina con l'ordine attivo per quel produttore
-        //$seller_id = $_GET['seller'];
-        $seller_id = $this->passedArgs['seller'];
-        if (is_null($seller_id))
-            $this->paginate = array('conditions' => $this->Hamper->getActiveConditions(), 'order' => array('Hamper.end_date asc'));
+        //dayana 12/06/2012 se mi viene passato il produttore, apro direttamente la pagina con l'ordine attivo per quel produttore        
+        if (empty($this->passedArgs['seller'])) 	
+        	$this->paginate = array('conditions' => $this->Hamper->getActiveConditions(), 'order' => array('Hamper.end_date asc'));
         else
         {
+            $seller_id = $this->passedArgs['seller'];
             $this->paginate = array('conditions' => $this->Hamper->getActiveConditionsForSeller($seller_id), 'order' => array('Hamper.end_date asc'));
             $hampers = $this->paginate();
             $id = $hampers[0]['Hamper']['id'];
