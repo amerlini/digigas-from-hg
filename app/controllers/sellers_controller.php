@@ -35,6 +35,7 @@ class SellersController extends AppController {
     
 	function admin_index() {
 		$this->Seller->recursive = 0;
+		$this->Seller->order = "Name";
 		$this->set('sellers', $this->paginate());
 	}
 
