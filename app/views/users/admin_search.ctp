@@ -29,7 +29,7 @@
     
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php __('Congome');?></th>
+			<th><?php __('Cognome');?></th>
 			<th><?php __('Nome');?></th>
 			<th><?php __('Username');?></th>
 			<th><?php __('e-mail');?></th>
