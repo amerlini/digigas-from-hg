@@ -45,13 +45,40 @@ class Hamper extends AppModel {
 
     var $actsAs = array('Containable', 'Commentable' => array('forumName' => 'Panieri'));
 
+		
 	function beforeFind($queryData) {
-		if(Configure::read('ReferentUser.allowed_sellers')) {
-			$queryData = array_merge_recursive(
-				array(
-					'conditions' => array('Hamper.seller_id' => Configure::read('ReferentUser.allowed_sellers'))
-				),
-				$queryData);
+		if (Configure::read('ReferentUser.allowed_sellers')) {
+			$allowed_sellers=Configure::read('ReferentUser.allowed_sellers');
+			$forbidden_sellers=0;
+			
+			if (isset($queryData['conditions']['Hamper.seller_id'])) {	
+				$testCondition = $queryData['conditions']['Hamper.seller_id'];			
+				// devo vedere se e' un valore singolo e cercarlo
+				// altrimenti se e' un array devo scorrerlo e cercarli tutti
+				if (is_array($testCondition))
+				{
+					$arrayLen = count($testCondition);
+					for($x=0;$x<$arrayLen;$x++) {
+						if (!in_array($testCondition[$x],$allowed_sellers))
+  						 { $forbidden_sellers += 1; }
+ 					}	
+				}
+				else				
+					if (!in_array($testCondition,$allowed_sellers))
+					{
+						$forbidden_sellers=1;
+					}
+				if ($forbidden_sellers <> 0)
+					// Situazione anomala, devo invalidare   						
+					$queryData['conditions']['Hamper.seller_id'] =  FALSE;								
+			}
+			else
+			{
+				// Aggiungo i fornitori di cui l'utente e' referente
+				$queryData = array_merge_recursive($queryData,
+						array('conditions' => array('Hamper.seller_id' => Configure::read('ReferentUser.allowed_sellers'))));
+			}
+					
 		}
 		return $queryData;
 	}
