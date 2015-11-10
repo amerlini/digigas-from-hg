@@ -15,7 +15,7 @@ $('.product .options h4', '.products').css({cursor: 'pointer'}).click(function()
 
 $('.product a').tooltip({
     track: true,
-    delay: 0,
+    delay: 0,	
     showURL: false,
     showBody: ' - ',
     fade: 250
@@ -144,7 +144,7 @@ $this->Layout->blockEnd();
 							echo $this->Form->hidden('hamper_id', array('value' => $hamper['Hamper']['id']));
 							echo $this->Form->hidden('seller_id', array('value' => $hamper['Seller']['id']));
 							$selectOptions = array();
-							for ($i = 1; $i < 11; $i++) {
+							for ($i = 1; $i < 51; $i++) {
 								$value = (string) ($i * $product['number']);
 								$selectOptions[$value] = $value;
 							}
