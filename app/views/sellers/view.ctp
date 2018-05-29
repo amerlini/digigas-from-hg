@@ -80,6 +80,8 @@
                         <?php endif; ?>
                 <div class="pack"><?php __('Confezione: ');
                             echo $product['packing'];?></div>
+                <div class="code"><?php __('Codice: ');
+                            echo $product['code'];?></div>
             </div>
             <div class="clear"></div>
         </div>
