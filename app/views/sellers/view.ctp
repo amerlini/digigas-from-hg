@@ -72,7 +72,7 @@
                 <div class="number"><?php __('Pezzi per collo: ');
                             echo $product['number'];?></div>
                 <div class="value"><?php __('Prezzo: ');
-                            echo $product['value'];?></div>
+                            echo $this->Number->currency($product['value'], 'EUR');?></div>
             </div>
             <div class="detail-2">
                         <?php if(!empty($product['text'])): ?>
