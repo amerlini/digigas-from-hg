@@ -53,7 +53,7 @@
 		if(!empty($seller['months'])):
 			foreach($seller['months'] as $month => $value): ?>
 
-			<div class="item-name"><?php echo monthToString($month); ?></div>
+			<div class="item-name"><?php echo __(monthToString($month), true); ?></div>
 			<div class="item-value"><?php echo $this->Number->currency($value, 'EUR'); ?> </div>
 			
 		<?php 
