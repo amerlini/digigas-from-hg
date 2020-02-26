@@ -73,4 +73,28 @@
 		margin-top: 20px;
 		background-color: #f0f0f0;
 	}
+	
+	dl  {
+		margin: 0px; padding: 0px;
+		overflow: auto;
+	}
+
+	dt  {
+	   display: inline-block;
+	   width: 30%;
+	   text-align: right;
+	}
+
+	dd {
+	   width: 60%;
+	   display: inline-block;
+	   font-size: small !important;
+	}
+	
+	.product-detail .name {
+		width: auto;
+	}
+	.product-detail .detail-2 {
+		margin-left: auto;
+	}
 }
