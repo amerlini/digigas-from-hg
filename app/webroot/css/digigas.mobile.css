@@ -102,4 +102,8 @@
 		width: auto;
 		height: auto;
 	}
+	
+	div.form, div.index, div.view {
+		width: auto;
+	}
 }
