@@ -97,4 +97,9 @@
 	.product-detail .detail-2 {
 		margin-left: auto;
 	}
+	
+	.sellers.index .seller {
+		width: auto;
+		height: auto;
+	}
 }
