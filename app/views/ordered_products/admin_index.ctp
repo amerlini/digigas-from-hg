@@ -30,18 +30,20 @@
 			));
 		?>	</p>
 
-		<table cellpadding="0" cellspacing="0">
-			<tr>
-				<th><?php echo $this->Paginator->sort(__('Acquirente', true), 'user_id'); ?></th>
-				<th><?php echo $this->Paginator->sort(__('Produttore', true), 'seller_id'); ?></th>
-				<th><?php echo $this->Paginator->sort(__('Prodotto', true), 'product_id'); ?></th>
-				<th><?php echo $this->Paginator->sort(__('Quantità', true), 'quantity'); ?></th>
-				<th><?php echo $this->Paginator->sort(__('Totale', true), 'value'); ?></th>
-				<th><?php echo $this->Paginator->sort(__('Consegna', true), 'hamper_id'); ?></th>
-				<th class="actions"><?php echo $this->Paginator->sort(__('Pagato', true), 'paid'); ?></th>
-				<th class="actions"><?php echo $this->Paginator->sort(__('Ritirato', true), 'retired'); ?></th>
-				<th class="actions"><?php __('Azioni') ?></th>
-			</tr>
+		<table class="responsive" cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Acquirente', true), 'user_id'); ?></th>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Produttore', true), 'seller_id'); ?></th>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Prodotto', true), 'product_id'); ?></th>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Quantità', true), 'quantity'); ?></th>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Totale', true), 'value'); ?></th>
+					<th scope="col"><?php echo $this->Paginator->sort(__('Consegna', true), 'hamper_id'); ?></th>
+					<th scope="col" class="actions"><?php echo $this->Paginator->sort(__('Pagato', true), 'paid'); ?></th>
+					<th scope="col" class="actions"><?php echo $this->Paginator->sort(__('Ritirato', true), 'retired'); ?></th>
+					<th scope="col" class="actions"><?php __('Azioni') ?></th>
+				</tr>
+			</thead>
 		<?php
 			$i = 0;
 			foreach ($orderedProducts as $orderedProduct):
@@ -50,14 +52,14 @@
 					$class = ' class="altrow"';
 				}
 		?>
-				<tr<?php echo $class; ?>>
-					<td>
+				<tr scope="row" <?php echo $class; ?>>
+					<td data-label="<?php echo __('Acquirente') ?>">
 				<?php echo $this->Html->link($orderedProduct['User']['fullname'], array('action' => 'index_user', $orderedProduct['User']['id'])); ?>
-            </td>
-            <td>
-				<?php echo $this->Html->link($orderedProduct['Seller']['name'], array('action' => 'index_seller', $orderedProduct['Seller']['id'])); ?>
-            </td>
-            <td>
+					</td>
+					<td data-label="<?php echo __('Produttore') ?>">
+						<?php echo $this->Html->link($orderedProduct['Seller']['name'], array('action' => 'index_seller', $orderedProduct['Seller']['id'])); ?>
+					</td>
+					<td data-label="<?php echo __('Prodotto') ?>">
 				<?php
 				echo $orderedProduct['Product']['name'];
 
@@ -81,14 +83,14 @@
 					echo $html->div('product_details', $details);
 				}
 				?>
-            </td>            
-            <td>
+            </td>
+            <td data-label="<?php echo __('Quantità') ?>">
 				<?php echo $orderedProduct['OrderedProduct']['quantity']; ?>
 				&nbsp;
 				<?php echo $orderedProduct['Product']['units']; ?>
 			</td>
-            <td class="value"><?php echo $this->Number->currency($orderedProduct['OrderedProduct']['value'], 'EUR' ); ?></td>
-            <td>
+            <td data-label="<?php echo __('Totale') ?>" class="value"><?php echo $this->Number->currency($orderedProduct['OrderedProduct']['value'], 'EUR' ); ?></td>
+            <td data-label="<?php echo __('Consegna') ?>">
 				<?php
 				if (!date_is_empty($orderedProduct['Hamper']['delivery_date_on'])) {
 					echo $this->Html->link(date('d/m/Y', strtotime($orderedProduct['Hamper']['delivery_date_on'])), array('action' => 'index_hamper', $orderedProduct['Hamper']['id']), array('title' => __('visualizza gli ordini di questo paniere', true)));
@@ -97,21 +99,21 @@
 				}
 				?>
             </td>
-            <td class="actions"><?php
+            <td data-label="<?php echo __('Pagato') ?>" class="actions"><?php
 				if ($orderedProduct['OrderedProduct']['paid']) {
 					echo $this->Html->image('oxygen/16x16/actions/apply.png', array('url' => array('action' => 'set_not_paid', $orderedProduct['OrderedProduct']['id'])));
 				} else {
 					echo $this->Html->image('oxygen/16x16/actions/mail_mark_important.png', array('url' => array('action' => 'set_paid', $orderedProduct['OrderedProduct']['id'])));
 				}
 				?></td>
-            <td class="actions"><?php
+            <td data-label="<?php echo __('Ritirato') ?>" class="actions"><?php
 				if ($orderedProduct['OrderedProduct']['retired']) {
 					echo $this->Html->image('oxygen/16x16/actions/apply.png', array('url' => array('action' => 'set_not_retired', $orderedProduct['OrderedProduct']['id'])));
 				} else {
 					echo $this->Html->image('oxygen/16x16/actions/mail_mark_important.png', array('url' => array('action' => 'set_retired', $orderedProduct['OrderedProduct']['id'])));
 				}
 				?></td>
-            <td>
+            <td data-label="<?php echo __('Azioni') ?>" >
 				<?php echo $this->Html->image('oxygen/16x16/actions/edit.png', array('url' => array('action' => 'edit', $orderedProduct['OrderedProduct']['id']), 'title' => __('modifica', true))); ?>
             </td>
         </tr>
