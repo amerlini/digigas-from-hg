@@ -49,3 +49,5 @@ app/config/database.php
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+
+*.code-workspace
