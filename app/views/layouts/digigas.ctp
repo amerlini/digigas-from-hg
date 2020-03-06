@@ -18,10 +18,11 @@
         echo $this->Html->css('digigas/jquery.treeTable');
         echo $this->Html->css('jquery-ui-1.8.6.custom');
 
-		//echo $this->Html->css('digigas.mobile');
+		echo $this->Html->css('digigas.mobile');
 
 		echo $this->DynamicCss->render();
 	?>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 	<div id="container">

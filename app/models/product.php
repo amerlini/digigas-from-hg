@@ -112,7 +112,7 @@ class Product extends AppModel {
     function getAllFromSellerByCategory($seller_id) {
         $products = $this->find('all', array(
             'conditions' => array('seller_id' => $seller_id),
-            'fields' => array('id', 'name', 'image'),
+            'fields' => array('id', 'name', 'image', 'code'),
             'contain' => array(
                 'ProductCategory' => array(
                     'order' => 'ProductCategory.lft asc',
