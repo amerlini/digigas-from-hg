@@ -47,6 +47,7 @@
                     echo $this->Html->div('input checkbox',
                         $this->Form->checkbox('Product.Product. .', array('value' => $product['id'], 'hiddenField' => false, 'checked' => $checked))
                         .$this->Html->tag('label', $product['name'])
+                        .$this->Html->tag('label', $product['code'])
                     )
                     ?>
                 </div>
